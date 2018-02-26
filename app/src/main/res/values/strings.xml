@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GeotagMap</string>
+    <string name="title_activity_main_map">Geotagged Images</string>
+</resources>
