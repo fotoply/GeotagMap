@@ -1,5 +1,6 @@
 package student.sdu.dk.geotagmap;
 
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,9 +10,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
 
@@ -39,9 +41,21 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setOnMarkerClickListener(this);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
+        Log.i("Test1", sydney.toString());
+        ImageStore.getInstance().storeImage(sydney,  "https://www.w3schools.com/howto/img_fjords.jpg");
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        ImageViewerFragment imageViewerFragment  = ImageViewerFragment.newInstance(marker.getPosition());
+        imageViewerFragment.show(getFragmentManager(), "imageDialog");
+        return false;
     }
 }
