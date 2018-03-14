@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import student.sdu.dk.geotagmap.image.ImageLoader;
 import student.sdu.dk.geotagmap.image.ImageStore;
 
-public class MainMapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
 
     private GoogleMap mMap;
