@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import student.sdu.dk.geotagmap.ImageStore;
-
 public class ImageLoader {
 
     public void loadImageData(Context context) {
