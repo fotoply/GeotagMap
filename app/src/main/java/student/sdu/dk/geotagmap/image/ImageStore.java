@@ -35,7 +35,9 @@ public class ImageStore {
             imageMap.put(position, new ArrayList<>());
         }
         imageMap.get(position).add(image);
-        updateMap.addMarker(new MarkerOptions().position(position));
+        if(updateMap != null) {
+            updateMap.addMarker(new MarkerOptions().position(position));
+        }
     }
 
     public void setUpdateMap(GoogleMap updateMap) {
