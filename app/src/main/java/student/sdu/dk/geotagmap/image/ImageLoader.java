@@ -37,17 +37,27 @@ public class ImageLoader {
         Log.i("IMAGES", Arrays.toString(images.toArray()));
 
         for (String image : images) {
-            ImageStore.getInstance().storeImage(getLatLong(image), image);
+            LatLng latLong = getLatLong(image);
+            if(latLong != null) {
+                ImageStore.getInstance().storeImage(latLong, image);
+            }
         }
     }
 
-    LatLng getLatLong(String file) {
+    private LatLng getLatLong(String file) {
         LatLng position = null;
         try {
             ExifInterface exifInterface = new ExifInterface(file);
 
-            double lat = convertToDegree(exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
-            double lng = convertToDegree(exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+            String latAttribute = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+            String lngAttribute = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+
+            if(latAttribute == null || lngAttribute == null) {
+                return null;
+            }
+
+            double lat = convertToDegree(latAttribute);
+            double lng = convertToDegree(lngAttribute);
 
             position = new LatLng(lat, lng);
         } catch (IOException e) {
