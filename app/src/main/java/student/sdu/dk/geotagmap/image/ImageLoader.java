@@ -13,6 +13,8 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,7 +94,7 @@ public class ImageLoader {
         Double S1 = Double.valueOf(stringS[1]);
         Double FloatS = S0 / S1;
 
-        result = Double.valueOf(FloatD + (FloatM / 60) + (FloatS / 3600));
+        result = round(Double.valueOf(FloatD + (FloatM / 60) + (FloatS / 3600)), 5);
 
         return result;
 
@@ -117,5 +119,13 @@ public class ImageLoader {
         }
         cursor.close();
         return result;
+    }
+
+    private static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.FLOOR);
+        return bd.doubleValue();
     }
 }

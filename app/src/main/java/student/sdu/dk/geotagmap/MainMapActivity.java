@@ -52,7 +52,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
         Log.i("Test1", sydney.toString());
-        ImageStore.getInstance().storeImage(sydney,  "https://www.w3schools.com/howto/img_fjords.jpg");
+        //ImageStore.getInstance().storeImage(sydney,  "https://www.w3schools.com/howto/img_fjords.jpg");
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
