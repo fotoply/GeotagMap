@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 
+import student.sdu.dk.geotagmap.image.ImageStore;
+
 
 /**
  * A simple {@link Fragment} subclass.
