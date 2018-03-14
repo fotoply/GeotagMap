@@ -13,7 +13,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import student.sdu.dk.geotagmap.image.ImageLoader;
+
 public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+
 
     private GoogleMap mMap;
 
@@ -48,8 +51,15 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         LatLng sydney = new LatLng(-34, 151);
         Log.i("Test1", sydney.toString());
         ImageStore.getInstance().storeImage(sydney,  "https://www.w3schools.com/howto/img_fjords.jpg");
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        ImageLoader loader = new ImageLoader();
+        loader.loadImageData(this);
+
+        ImageStore.getInstance().getPositions().forEach((pos) -> {
+            mMap.addMarker(new MarkerOptions().position(pos));
+        });
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class ImageStore {
     private HashMap<LatLng, List<String>> imageMap;
@@ -20,6 +21,10 @@ public class ImageStore {
 
     public List<String> getImagesFromPosition(LatLng position) {
         return imageMap.getOrDefault(position, new ArrayList<>());
+    }
+
+    public Set<LatLng> getPositions() {
+        return imageMap.keySet();
     }
 
     public void storeImage(LatLng position, String image) {
