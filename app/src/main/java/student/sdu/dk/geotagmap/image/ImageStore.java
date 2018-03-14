@@ -1,4 +1,4 @@
-package student.sdu.dk.geotagmap;
+package student.sdu.dk.geotagmap.image;
 
 import com.google.android.gms.maps.model.LatLng;
 
