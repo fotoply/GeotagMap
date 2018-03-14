@@ -58,9 +58,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         ImageLoader loader = new ImageLoader();
         loader.loadImageData(this);
 
-        ImageStore.getInstance().getPositions().forEach((pos) -> {
-            mMap.addMarker(new MarkerOptions().position(pos));
-        });
+        ImageStore.getInstance().setUpdateMap(mMap);
     }
 
     @Override
