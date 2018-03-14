@@ -35,13 +35,19 @@ public class ImageLoader {
 
         List<String> images = getAllImages(context);
         Log.i("IMAGES", Arrays.toString(images.toArray()));
+        List<String> nonGeoImages = new ArrayList<>();
 
         for (String image : images) {
             LatLng latLong = getLatLong(image);
             if(latLong != null) {
                 ImageStore.getInstance().storeImage(latLong, image);
+            } else {
+                nonGeoImages.add(image);
             }
         }
+
+        Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getPositions().size() + " images with geo tag");
+        Log.i("IMAGES", "Loaded " + nonGeoImages.size() + " without geo tag");
     }
 
     private LatLng getLatLong(String file) {
