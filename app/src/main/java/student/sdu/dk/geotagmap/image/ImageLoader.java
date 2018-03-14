@@ -1,7 +1,10 @@
 package student.sdu.dk.geotagmap.image;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.ExifInterface;
 import android.provider.MediaStore;
@@ -17,6 +20,19 @@ import java.util.List;
 public class ImageLoader {
 
     public void loadImageData(Context context) {
+        Activity activity = (Activity) context;
+        if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+        }
+
+        while(activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         List<String> images = getAllImages(context);
         Log.i("IMAGES", Arrays.toString(images.toArray()));
 
