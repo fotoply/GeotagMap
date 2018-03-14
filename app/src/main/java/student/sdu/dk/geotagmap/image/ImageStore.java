@@ -1,5 +1,7 @@
 package student.sdu.dk.geotagmap.image;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -35,15 +37,20 @@ public class ImageStore {
             imageMap.put(position, new ArrayList<>());
         }
         imageMap.get(position).add(image);
+        addMarker(position);
+    }
+
+    private void addMarker(LatLng position) {
         if(updateMap != null) {
             updateMap.addMarker(new MarkerOptions().position(position));
+            Log.i("Marker", "New marker added");
         }
     }
 
     public void setUpdateMap(GoogleMap updateMap) {
         this.updateMap = updateMap;
         getPositions().forEach((pos) -> {
-            updateMap.addMarker(new MarkerOptions().position(pos));
+            addMarker(pos);
         });
     }
 }
