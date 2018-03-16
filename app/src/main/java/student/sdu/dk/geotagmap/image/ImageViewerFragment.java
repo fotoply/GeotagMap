@@ -1,10 +1,7 @@
-package student.sdu.dk.geotagmap;
+package student.sdu.dk.geotagmap.image;
 
 
-import android.app.Dialog;
 import android.app.DialogFragment;
-import android.gesture.Gesture;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -14,16 +11,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageSwitcher;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
-import student.sdu.dk.geotagmap.image.ImageStore;
+import student.sdu.dk.geotagmap.R;
 
 
 /**
