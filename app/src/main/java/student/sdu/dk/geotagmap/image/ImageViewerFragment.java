@@ -32,7 +32,7 @@ public class ImageViewerFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    static ImageViewerFragment newInstance(LatLng position) {
+    public static ImageViewerFragment newInstance(LatLng position) {
         ImageViewerFragment f = new ImageViewerFragment();
         Bundle args = new Bundle();
         args.putDouble("lat", position.latitude);
