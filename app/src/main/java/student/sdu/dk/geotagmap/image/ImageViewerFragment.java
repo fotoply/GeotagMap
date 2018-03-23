@@ -99,9 +99,7 @@ public class ImageViewerFragment extends DialogFragment {
                 return false;
             }
         });
-        imageView.setOnTouchListener((touchedView, touch) -> {
-            return gestureDetector.onTouchEvent(touch);
-        });
+        imageView.setOnTouchListener((touchedView, touch) -> gestureDetector.onTouchEvent(touch));
         //GlideApp.with(view.getContext()).load(pathName).into();
         return view;
     }

@@ -55,7 +55,10 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         ImageLoader loader = new ImageLoader();
-        loader.loadImageData(this);
+        loader.acquirePermissions(this);
+        Thread imageLoaderThread = new Thread(() -> {
+            loader.loadImageData(this);
+        });
 
         ImageStore.getInstance().setUpdateMap(mMap);
     }

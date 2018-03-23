@@ -8,11 +8,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class ImageStore {
     private HashMap<LatLng, List<String>> imageMap;
+    private Set<String> nonTaggedImages;
     private static final ImageStore ourInstance = new ImageStore();
     private GoogleMap updateMap;
 
@@ -22,6 +24,15 @@ public class ImageStore {
 
     private ImageStore() {
         imageMap = new HashMap<>();
+        nonTaggedImages = new HashSet<>();
+    }
+
+    public Set<String> getNonTaggedImages() {
+        return nonTaggedImages;
+    }
+
+    public void storeNonTaggedImage(String image) {
+        nonTaggedImages.add(image);
     }
 
     public List<String> getImagesFromPosition(LatLng position) {

@@ -22,7 +22,26 @@ import java.util.List;
 public class ImageLoader {
 
     public void loadImageData(Context context) {
-        Activity activity = (Activity) context;
+        List<String> images = getAllImages(context);
+        storeImages(images);
+
+        Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getPositions().size() + " images with geo tag"); //  Not precise, but precise enough
+        Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getNonTaggedImages().size() + " without geo tag");
+    }
+
+    private void storeImages(List<String> images) {
+        for (String image : images) {
+            LatLng latLong = getLatLong(image);
+            if(latLong != null) {
+                ImageStore.getInstance().storeImage(latLong, image);
+            } else {
+                ImageStore.getInstance().storeNonTaggedImage(image);
+            }
+        }
+    }
+
+    public void acquirePermissions(Activity context) {
+        Activity activity = context;
         if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
         }
@@ -34,22 +53,6 @@ public class ImageLoader {
                 e.printStackTrace();
             }
         }
-
-        List<String> images = getAllImages(context);
-        Log.i("IMAGES", Arrays.toString(images.toArray()));
-        List<String> nonGeoImages = new ArrayList<>();
-
-        for (String image : images) {
-            LatLng latLong = getLatLong(image);
-            if(latLong != null) {
-                ImageStore.getInstance().storeImage(latLong, image);
-            } else {
-                nonGeoImages.add(image);
-            }
-        }
-
-        Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getPositions().size() + " images with geo tag");
-        Log.i("IMAGES", "Loaded " + nonGeoImages.size() + " without geo tag");
     }
 
     private LatLng getLatLong(String file) {
