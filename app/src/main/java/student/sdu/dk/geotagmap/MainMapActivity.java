@@ -84,7 +84,6 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         //TODO Implement tagging menu
     }
 
-    @Override
     public boolean onMarkerClick(Marker marker) {
         ImageViewerFragment imageViewerFragment  = ImageViewerFragment.newInstance(marker.getPosition());
         imageViewerFragment.show(getFragmentManager(), "imageDialog");
