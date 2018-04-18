@@ -1,8 +1,10 @@
 package student.sdu.dk.geotagmap;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,11 +58,27 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
 
         ImageLoader loader = new ImageLoader();
         loader.acquirePermissions(this);
+        loader.setOnFinishLoading(() -> {
+            FloatingActionButton fab = findViewById(R.id.fab);
+            if(ImageStore.getInstance().getNonTaggedImages().size() > 0) {
+                fab.show();
+                fab.setOnClickListener((e) -> {
+                    untaggedButtonClicked(e);
+                });
+            } else {
+                fab.hide();
+            }
+        });
         Thread imageLoaderThread = new Thread(() -> {
             loader.loadImageData(this);
         });
+        imageLoaderThread.start();
 
         ImageStore.getInstance().setUpdateMap(mMap);
+    }
+
+    private void untaggedButtonClicked(View view) {
+        //TODO Implement tagging menu
     }
 
     @Override

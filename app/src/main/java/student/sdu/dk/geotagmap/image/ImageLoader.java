@@ -21,12 +21,18 @@ import java.util.List;
 
 public class ImageLoader {
 
+    private Runnable onFinishLoading;
+
     public void loadImageData(Context context) {
         List<String> images = getAllImages(context);
         storeImages(images);
 
         Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getPositions().size() + " images with geo tag"); //  Not precise, but precise enough
         Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getNonTaggedImages().size() + " without geo tag");
+
+        if(onFinishLoading != null) {
+            onFinishLoading.run();
+        }
     }
 
     private void storeImages(List<String> images) {
@@ -130,5 +136,9 @@ public class ImageLoader {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.FLOOR);
         return bd.doubleValue();
+    }
+
+    public void setOnFinishLoading(Runnable callback) {
+        this.onFinishLoading = callback;
     }
 }
