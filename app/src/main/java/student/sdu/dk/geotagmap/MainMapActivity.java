@@ -17,7 +17,7 @@ import student.sdu.dk.geotagmap.image.ImageLoader;
 import student.sdu.dk.geotagmap.image.ImageStore;
 import student.sdu.dk.geotagmap.image.ImageViewerFragment;
 
-public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback {
 
 
     private GoogleMap mMap;
@@ -44,37 +44,40 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        initMapSettings(googleMap);
+        startImageLoading();
+        ImageStore.getInstance().setUpdateMap(mMap);
+    }
 
-        mMap.setOnMarkerClickListener(this);
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        Log.i("Test1", sydney.toString());
-        //ImageStore.getInstance().storeImage(sydney,  "https://www.w3schools.com/howto/img_fjords.jpg");
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
+    private void startImageLoading() {
         ImageLoader loader = new ImageLoader();
         loader.acquirePermissions(this);
-        loader.setOnFinishLoading(() -> {
-            FloatingActionButton fab = findViewById(R.id.fab);
-            if(ImageStore.getInstance().getNonTaggedImages().size() > 0) {
-                fab.show();
-                fab.setOnClickListener((e) -> {
-                    untaggedButtonClicked(e);
-                });
-            } else {
-                fab.hide();
-            }
-        });
+        loader.setOnFinishLoading(this::onImagesFinishLoading);
         Thread imageLoaderThread = new Thread(() -> {
             loader.loadImageData(this);
         });
         imageLoaderThread.start();
+    }
 
-        ImageStore.getInstance().setUpdateMap(mMap);
+    private void initMapSettings(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setOnMarkerClickListener(this::onMarkerClick);
+        mMap.setOnMapClickListener(this::onMapClick);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+    }
+
+    private void onImagesFinishLoading() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        if(ImageStore.getInstance().getNonTaggedImages().size() > 0) {
+            fab.show();
+            fab.setOnClickListener(this::untaggedButtonClicked);
+        } else {
+            fab.hide();
+        }
+    }
+
+    private void onMapClick(LatLng latLng) {
+        //TODO Implement tagging action
     }
 
     private void untaggedButtonClicked(View view) {
