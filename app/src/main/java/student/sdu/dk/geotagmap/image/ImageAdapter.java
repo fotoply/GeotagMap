@@ -2,7 +2,9 @@ package student.sdu.dk.geotagmap.image;
 
 import android.net.Uri;
 import android.widget.*;
+
 import java.util.*;
+
 import android.graphics.*;
 import android.view.*;
 import android.content.*;

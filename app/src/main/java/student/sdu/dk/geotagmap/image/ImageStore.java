@@ -43,7 +43,7 @@ public class ImageStore {
     }
 
     public void storeImage(LatLng position, String image) {
-        if(!imageMap.containsKey(position)) {
+        if (!imageMap.containsKey(position)) {
             imageMap.put(position, new ArrayList<>());
         }
         imageMap.get(position).add(image);
@@ -51,7 +51,7 @@ public class ImageStore {
     }
 
     private void addMarker(LatLng position) {
-        if(updateMap != null) {
+        if (updateMap != null) {
             updateMap.addMarker(new MarkerOptions().position(position));
             Log.i("Marker", "New marker added");
         }

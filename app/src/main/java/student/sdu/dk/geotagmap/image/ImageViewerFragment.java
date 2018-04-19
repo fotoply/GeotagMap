@@ -64,12 +64,12 @@ public class ImageViewerFragment extends DialogFragment {
             @Override
             public boolean onDown(MotionEvent e) {
                 Log.i("IMAGES", "Image swapped");
-                if(others.size() == 1) {
+                if (others.size() == 1) {
                     return false;
                 }
 
                 currentImage++;
-                if(currentImage > others.size()-1) currentImage = 0;
+                if (currentImage > others.size() - 1) currentImage = 0;
                 imageView.setImageURI(Uri.parse(others.get(currentImage)));
                 return false;
             }

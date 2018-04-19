@@ -30,7 +30,7 @@ public class ImageLoader {
         Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getPositions().size() + " images with geo tag"); //  Not precise, but precise enough
         Log.i("IMAGES", "Loaded " + ImageStore.getInstance().getNonTaggedImages().size() + " without geo tag");
 
-        if(onFinishLoading != null) {
+        if (onFinishLoading != null) {
             onFinishLoading.run();
         }
     }
@@ -38,7 +38,7 @@ public class ImageLoader {
     private void storeImages(List<String> images) {
         for (String image : images) {
             LatLng latLong = getLatLong(image);
-            if(latLong != null) {
+            if (latLong != null) {
                 ImageStore.getInstance().storeImage(latLong, image);
             } else {
                 ImageStore.getInstance().storeNonTaggedImage(image);
@@ -52,7 +52,7 @@ public class ImageLoader {
             activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
         }
 
-        while(activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        while (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -69,7 +69,7 @@ public class ImageLoader {
             String latAttribute = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
             String lngAttribute = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
 
-            if(latAttribute == null || lngAttribute == null) {
+            if (latAttribute == null || lngAttribute == null) {
                 return null;
             }
 

@@ -72,7 +72,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     private void onImagesFinishLoading() {
         FloatingActionButton fab = findViewById(R.id.fab);
-        if(ImageStore.getInstance().getNonTaggedImages().size() > 0) {
+        if (ImageStore.getInstance().getNonTaggedImages().size() > 0) {
             fab.show();
             fab.setOnClickListener(this::untaggedButtonClicked);
         } else {
@@ -81,7 +81,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     private void onMapClick(LatLng latLng) {
-        if(this.imageGettingTagged == null) return;
+        if (this.imageGettingTagged == null) return;
         //TODO Implement tagging action
     }
 
@@ -92,7 +92,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     public boolean onMarkerClick(Marker marker) {
-        ImageViewerFragment imageViewerFragment  = ImageViewerFragment.newInstance(marker.getPosition());
+        ImageViewerFragment imageViewerFragment = ImageViewerFragment.newInstance(marker.getPosition());
         imageViewerFragment.show(getFragmentManager(), "imageDialog");
         return false;
     }
