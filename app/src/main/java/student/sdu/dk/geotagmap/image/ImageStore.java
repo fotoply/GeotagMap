@@ -2,7 +2,6 @@ package student.sdu.dk.geotagmap.image;
 
 import android.util.Log;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -16,7 +15,7 @@ public class ImageStore {
     private HashMap<LatLng, List<String>> imageMap;
     private Set<String> nonTaggedImages;
     private static final ImageStore ourInstance = new ImageStore();
-    private GoogleMap updateMap;
+    private UpdatableMap updateMap;
 
     public static ImageStore getInstance() {
         return ourInstance;
@@ -58,10 +57,8 @@ public class ImageStore {
         }
     }
 
-    public void setUpdateMap(GoogleMap updateMap) {
+    public void setUpdateMap(UpdatableMap updateMap) {
         this.updateMap = updateMap;
-        getPositions().forEach((pos) -> {
-            addMarker(pos);
-        });
+        getPositions().forEach(this::addMarker);
     }
 }

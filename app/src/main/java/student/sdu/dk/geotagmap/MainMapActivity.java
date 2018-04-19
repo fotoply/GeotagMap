@@ -1,7 +1,9 @@
 package student.sdu.dk.geotagmap;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,14 +15,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import student.sdu.dk.geotagmap.image.ImageChooserFragment;
 import student.sdu.dk.geotagmap.image.ImageLoader;
 import student.sdu.dk.geotagmap.image.ImageStore;
 import student.sdu.dk.geotagmap.image.ImageViewerFragment;
 
-public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback, ImageChooserFragment.OnFragmentInteractionListener {
 
 
     private GoogleMap mMap;
+    private Uri imageGettingTagged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         initMapSettings(googleMap);
         startImageLoading();
-        ImageStore.getInstance().setUpdateMap(mMap);
+        ImageStore.getInstance().setUpdateMap((marker) -> runOnUiThread(() -> mMap.addMarker(marker)));
     }
 
     private void startImageLoading() {
@@ -77,16 +81,25 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     private void onMapClick(LatLng latLng) {
+        if(this.imageGettingTagged == null) return;
         //TODO Implement tagging action
     }
 
     private void untaggedButtonClicked(View view) {
-        //TODO Implement tagging menu
+        ImageChooserFragment imageChooserFragment = ImageChooserFragment.newInstance();
+        imageChooserFragment.onAttach(this);
+        imageChooserFragment.show(getFragmentManager(), "imageChooserDialog");
     }
 
     public boolean onMarkerClick(Marker marker) {
         ImageViewerFragment imageViewerFragment  = ImageViewerFragment.newInstance(marker.getPosition());
         imageViewerFragment.show(getFragmentManager(), "imageDialog");
         return false;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri, android.app.DialogFragment fragment) {
+        this.imageGettingTagged = uri;
+        fragment.dismiss();
     }
 }
