@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:minHeight="76pt"
+        android:minHeight="150pt"
         android:numColumns="3"
         android:stretchMode="columnWidth"
         android:scrollbars="vertical"/>

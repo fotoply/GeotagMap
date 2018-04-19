@@ -42,17 +42,18 @@ public class ImageLoader {
                 ImageStore.getInstance().storeImage(latLong, image);
             } else {
                 ImageStore.getInstance().storeNonTaggedImage(image);
+                Log.i("testing", image);
             }
         }
     }
 
     public void acquirePermissions(Activity context) {
         Activity activity = context;
-        if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+        if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
         }
 
-        while (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        while (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
