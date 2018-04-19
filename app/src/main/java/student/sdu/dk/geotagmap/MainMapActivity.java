@@ -94,8 +94,20 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         try {//(ParcelFileDescriptor parcelFileDescriptor  = getApplicationContext().getContentResolver().openFileDescriptor(imageGettingTagged, "rw")){
             //FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
             ExifInterface exifInterface = new ExifInterface(imageGettingTagged.getPath());
-            exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, convert(latLng.latitude));
-            exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, convert(latLng.longitude));
+            exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, doubleToDmsString(latLng.latitude));
+            exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, doubleToDmsString(latLng.longitude));
+
+            if (latLng.latitude > 0) {
+                exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+            } else {
+                exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+            }
+
+            if (latLng.longitude > 0) {
+                exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+            } else {
+                exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+            }
             exifInterface.saveAttributes();
 
             ImageStore.getInstance().getNonTaggedImages().remove(imageGettingTagged.getPath());
@@ -106,26 +118,14 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         imageGettingTagged = null;
     }
 
-    private static String convert(double coordinate) {
-        StringBuilder sb = new StringBuilder();
-
-        coordinate = Math.abs(coordinate);
-        int degree = (int) coordinate;
-        coordinate *= 60;
-        coordinate -= (degree * 60.0d);
-        int minute = (int) coordinate;
-        coordinate *= 60;
-        coordinate -= (minute * 60.0d);
-        int second = (int) (coordinate * 1000.0d);
-
-        sb.setLength(0);
-        sb.append(degree);
-        sb.append("/1,");
-        sb.append(minute);
-        sb.append("/1,");
-        sb.append(second);
-        sb.append("/1000,");
-        return sb.toString();
+    String doubleToDmsString(double coord) {
+        coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
+        String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
+        coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
+        sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
+        coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
+        sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
+        return sOut;
     }
 
     private void untaggedButtonClicked(View view) {
@@ -135,8 +135,9 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     public boolean onMarkerClick(Marker marker) {
-        if(imageGettingTagged != null) {
+        if (imageGettingTagged != null) {
             onMapClick(marker.getPosition());
+            return false;
         }
         ImageViewerFragment imageViewerFragment = ImageViewerFragment.newInstance(marker.getPosition());
         imageViewerFragment.show(getFragmentManager(), "imageDialog");

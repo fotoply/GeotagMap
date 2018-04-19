@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
 import android.media.ExifInterface;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -16,7 +17,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ImageLoader {
@@ -63,52 +63,55 @@ public class ImageLoader {
     }
 
     private LatLng getLatLong(String file) {
-        LatLng position = null;
-        try {
-            ExifInterface exifInterface = new ExifInterface(file);
+        Location location = exif2Loc(file);
+        if(location == null) return null;
 
-            String latAttribute = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-            String lngAttribute = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-
-            if (latAttribute == null || lngAttribute == null) {
-                return null;
-            }
-
-            double lat = convertToDegree(latAttribute);
-            double lng = convertToDegree(lngAttribute);
-
-            position = new LatLng(lat, lng);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 
         return position;
     }
 
-    private Double convertToDegree(String stringDMS) {
-        Double result = null;
-        String[] DMS = stringDMS.split(",", 3);
+    public Location exif2Loc(String flNm) {
+        String sLat = "", sLatR = "", sLon = "", sLonR = "";
+        try {
+            ExifInterface ef = new ExifInterface(flNm);
+            sLat = ef.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+            sLon = ef.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+            sLatR = ef.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+            sLonR = ef.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+        } catch (IOException e) {
+            return null;
+        }
 
-        String[] stringD = DMS[0].split("/", 2);
-        Double D0 = Double.valueOf(stringD[0]);
-        Double D1 = Double.valueOf(stringD[1]);
-        Double FloatD = D0 / D1;
+        if(sLat == null || sLatR == null || sLon == null || sLonR == null) return null;
 
-        String[] stringM = DMS[1].split("/", 2);
-        Double M0 = Double.valueOf(stringM[0]);
-        Double M1 = Double.valueOf(stringM[1]);
-        Double FloatM = M0 / M1;
+        double lat = stringToDouble(sLat);
+        if (lat > 180.0) return null;
+        double lon = stringToDouble(sLon);
+        if (lon > 180.0) return null;
 
-        String[] stringS = DMS[2].split("/", 2);
-        Double S0 = Double.valueOf(stringS[0]);
-        Double S1 = Double.valueOf(stringS[1]);
-        Double FloatS = S0 / S1;
+        lat = sLatR.contains("S") ? -lat : lat;
+        lon = sLonR.contains("W") ? -lon : lon;
 
-        result = round(Double.valueOf(FloatD + (FloatM / 60) + (FloatS / 3600)), 5);
+        Location loc = new Location("exif");
+        loc.setLatitude(lat);
+        loc.setLongitude(lon);
+        return loc;
+    }
 
-        return result;
-
-
+    public static double stringToDouble(String sDMS) {
+        double dRV = 999.0;
+        try {
+            String[] DMSs = sDMS.split(",", 3);
+            String s[] = DMSs[0].split("/", 2);
+            dRV = (new Double(s[0]) / new Double(s[1]));
+            s = DMSs[1].split("/", 2);
+            dRV += ((new Double(s[0]) / new Double(s[1])) / 60);
+            s = DMSs[2].split("/", 2);
+            dRV += ((new Double(s[0]) / new Double(s[1])) / 3600);
+        } catch (Exception e) {
+        }
+        return round(dRV, 5);
     }
 
 
