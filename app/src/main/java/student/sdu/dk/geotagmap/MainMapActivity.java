@@ -1,11 +1,13 @@
 package student.sdu.dk.geotagmap;
 
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -43,6 +45,8 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Fragment settingFragment = SettingsFragment.newInstance();
+        getFragmentManager().beginTransaction().add(R.id.nav_view, settingFragment).commit();
     }
 
 
