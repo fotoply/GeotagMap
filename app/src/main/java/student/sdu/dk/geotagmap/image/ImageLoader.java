@@ -4,10 +4,12 @@ package student.sdu.dk.geotagmap.image;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.media.ExifInterface;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -19,11 +21,15 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class ImageLoader {
 
     private Runnable onFinishLoading;
+    private SharedPreferences preferences;
 
     public void loadImageData(Context context) {
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
         List<String> images = getAllImages(context);
         storeImages(images);
 
@@ -71,7 +77,7 @@ public class ImageLoader {
         return position;
     }
 
-    public Location exif2Loc(String flNm) {
+    private Location exif2Loc(String flNm) {
         String sLat = "", sLatR = "", sLon = "", sLonR = "";
         try {
             ExifInterface ef = new ExifInterface(flNm);
@@ -99,7 +105,7 @@ public class ImageLoader {
         return loc;
     }
 
-    public static double stringToDouble(String sDMS) {
+    private double stringToDouble(String sDMS) {
         double dRV = 999.0;
         try {
             String[] DMSs = sDMS.split(",", 3);
@@ -111,11 +117,13 @@ public class ImageLoader {
             dRV += ((new Double(s[0]) / new Double(s[1])) / 3600);
         } catch (Exception e) {
         }
-        return round(dRV, 5);
+
+        int roundingPrecision = Integer.parseInt(preferences.getString("precision", "5"));
+        return round(dRV, roundingPrecision);
     }
 
 
-    private static List<String> getAllImages(Context context) {
+    private List<String> getAllImages(Context context) {
         final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection,
@@ -134,7 +142,7 @@ public class ImageLoader {
         return result;
     }
 
-    private static double round(double value, int places) {
+    private double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
         BigDecimal bd = new BigDecimal(value);
