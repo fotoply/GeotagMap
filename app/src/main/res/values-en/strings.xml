@@ -3,5 +3,5 @@
     <string name="app_name">GeotagMap</string>
     <string name="title_activity_main_map">Geotagged Images</string>
     <string name="precision_option">Location precision</string>
-    <string name="precision_desc">Choose how many decimals to use when grouping markers on map</string>
+    <string name="precision_desc">Choose how many decimals to use when grouping markers on map (Requires restart)</string>
 </resources>
