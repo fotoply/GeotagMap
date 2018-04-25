@@ -91,8 +91,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     private void onMapClick(LatLng latLng) {
         if (this.imageGettingTagged == null) return;
-        try {//(ParcelFileDescriptor parcelFileDescriptor  = getApplicationContext().getContentResolver().openFileDescriptor(imageGettingTagged, "rw")){
-            //FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        try {
             ExifInterface exifInterface = new ExifInterface(imageGettingTagged.getPath());
             exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, doubleToDmsString(latLng.latitude));
             exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, doubleToDmsString(latLng.longitude));
@@ -123,12 +122,12 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     String doubleToDmsString(double coord) {
-        coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
-        String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
-        coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
-        sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
-        coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
-        sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
+        coord = coord > 0 ? coord : -coord;
+        String sOut = Integer.toString((int) coord) + "/1,";
+        coord = (coord % 1) * 60;
+        sOut = sOut + Integer.toString((int) coord) + "/1,";
+        coord = (coord % 1) * 60000;
+        sOut = sOut + Integer.toString((int) coord) + "/1000";
         return sOut;
     }
 
