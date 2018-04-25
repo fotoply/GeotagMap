@@ -116,6 +116,10 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
             e.printStackTrace();
         }
         imageGettingTagged = null;
+        if(ImageStore.getInstance().getNonTaggedImages().size() == 0) {
+            FloatingActionButton fab = findViewById(R.id.fab);
+            fab.hide();
+        }
     }
 
     String doubleToDmsString(double coord) {
