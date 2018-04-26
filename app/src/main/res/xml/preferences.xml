@@ -7,4 +7,12 @@
         android:defaultValue="5"
         android:entryValues="@array/precisionValues"
         android:entries="@array/precisionValues"/>
+    <CheckBoxPreference
+        android:key="hideUntaggedImages"
+        android:title="@string/untagged_option"
+        android:summary="@string/untagged_desc"
+        android:persistent="true"
+        android:defaultValue="false"
+        android:checked="false"
+        />
 </PreferenceScreen>

@@ -2,28 +2,22 @@ package student.sdu.dk.geotagmap;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import student.sdu.dk.geotagmap.image.ImageChooserFragment;
@@ -36,6 +30,8 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleMap mMap;
     private Uri imageGettingTagged;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +60,20 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         initMapSettings(googleMap);
         startImageLoading();
         ImageStore.getInstance().setUpdateMap((marker) -> runOnUiThread(() -> mMap.addMarker(marker)));
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                setFABStatus();
+            }
+        };
+
+        preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void startImageLoading() {
         ImageLoader loader = new ImageLoader();
         loader.acquirePermissions(this);
-        loader.setOnFinishLoading(this::onImagesFinishLoading);
+        loader.setOnFinishLoading(this::setFABStatus);
         Thread imageLoaderThread = new Thread(() -> {
             loader.loadImageData(this);
         });
@@ -83,8 +87,12 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         mMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
-    private void onImagesFinishLoading() {
+    private void setFABStatus() {
         FloatingActionButton fab = findViewById(R.id.fab);
+        if(preferences.getBoolean("hideUntaggedImages", false)) {
+            fab.hide();
+            return;
+        }
         if (ImageStore.getInstance().getNonTaggedImages().size() > 0) {
             fab.show();
             fab.setOnClickListener(this::untaggedButtonClicked);
