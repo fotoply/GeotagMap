@@ -163,6 +163,6 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     public void onFragmentInteraction(Uri uri, DialogFragment fragment) {
         this.imageGettingTagged = uri;
         fragment.dismiss();
-        Snackbar.make(findViewById(R.id.drawer_layout), "Press anywhere to place the image", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.drawer_layout), R.string.snackbar_place, Snackbar.LENGTH_LONG).show();
     }
 }

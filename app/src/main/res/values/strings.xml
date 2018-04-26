@@ -7,4 +7,5 @@
     <string name="precision_desc">Vælg hvor mange decimaler der skal bruges når billeder grupperes (Kræver genstart)</string>
     <string name="untagged_option">Skjul billeder uden tag</string>
     <string name="untagged_desc">Skjuller billeder som ikke har et GPS koordinat gemt</string>
+    <string name="snackbar_place">Tryk på kortet for at placere billede</string>
 </resources>
