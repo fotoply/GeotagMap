@@ -9,8 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;import android.annotation.SuppressLint;
+import android.location.Location;
+import android.media.ExifInterface;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.File;
 
 import student.sdu.dk.geotagmap.R;
 
@@ -24,11 +32,15 @@ public class DeleteFragment extends DialogFragment {
         // Required empty public constructor
     }
 
+    private Button deleteButton;
+    private Button declineButton;
+    private Uri image;
+
     public static DeleteFragment newInstance(Uri image) {
         DeleteFragment f = new DeleteFragment();
         Bundle args = new Bundle();
+        args.putString("imageString", image.toString());
         f.setArguments(args);
-
         return f;
     }
 
@@ -40,12 +52,30 @@ public class DeleteFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog, container, false);
-        Button deleteButton = view.findViewById(R.id.delButton);
-        Button declineButton = view.findViewById(R.id.declineButton);
-
-
-
+        image = Uri.parse(getArguments().getString("imageString", null));
+        deleteButton = view.findViewById(R.id.delButton);
+        deleteButton.setOnClickListener(v -> {
+            deleteButtonAction(v);
+        });
         return view;
+    }
+
+    public void deleteButtonAction(View v) {
+        MarkGeoTagImage(image.toString());
+    }
+
+    public void MarkGeoTagImage(String imagePath)
+    {
+        try {
+            ExifInterface exif = new ExifInterface(imagePath);
+            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, null);
+            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, null);
+            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, null);
+            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, null);
+            exif.saveAttributes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -94,7 +94,8 @@ public class ImageViewerFragment extends DialogFragment {
             @Override
             public void onLongPress(MotionEvent e) {
                 Uri  a = Uri.parse(others.get(currentImage));
-                DeleteFragment.newInstance(a);
+                DeleteFragment d = DeleteFragment.newInstance(a);
+                d.show(getFragmentManager(), "imageDialog");
             }
 
             @Override

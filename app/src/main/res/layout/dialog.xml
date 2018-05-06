@@ -17,17 +17,6 @@
         android:layout_toRightOf="@+id/imageDialog"/>
 
     <Button
-        android:id="@+id/declineButton"
-        android:layout_width="150px"
-        android:layout_height="wrap_content"
-        android:text=" Submit "
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_below="@+id/textDialog"
-        android:layout_toRightOf="@+id/imageDialog"
-        />
-
-    <Button
         android:id="@+id/delButton"
         android:layout_width="200px"
         android:layout_height="wrap_content"
@@ -35,7 +24,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
         android:layout_below="@+id/textDialog"
-        android:layout_toRightOf="@+id/declineButton"
+        android:layout_toRightOf="@+id/imageDialog"
         />
 
 </RelativeLayout>
