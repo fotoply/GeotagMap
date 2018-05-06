@@ -1,27 +1,23 @@
 package student.sdu.dk.geotagmap;
 
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import student.sdu.dk.geotagmap.image.ImageChooserFragment;
@@ -34,6 +30,8 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleMap mMap;
     private Uri imageGettingTagged;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +41,8 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Fragment settingFragment = SettingsFragment.newInstance();
+        getFragmentManager().beginTransaction().add(R.id.nav_view, settingFragment).commit();
     }
 
 
@@ -60,12 +60,20 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         initMapSettings(googleMap);
         startImageLoading();
         ImageStore.getInstance().setUpdateMap((marker) -> runOnUiThread(() -> mMap.addMarker(marker)));
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                setFABStatus();
+            }
+        };
+
+        preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void startImageLoading() {
         ImageLoader loader = new ImageLoader();
         loader.acquirePermissions(this);
-        loader.setOnFinishLoading(this::onImagesFinishLoading);
+        loader.setOnFinishLoading(this::setFABStatus);
         Thread imageLoaderThread = new Thread(() -> {
             loader.loadImageData(this);
         });
@@ -79,8 +87,12 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         mMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
-    private void onImagesFinishLoading() {
+    private void setFABStatus() {
         FloatingActionButton fab = findViewById(R.id.fab);
+        if(preferences.getBoolean("hideUntaggedImages", false)) {
+            fab.hide();
+            return;
+        }
         if (ImageStore.getInstance().getNonTaggedImages().size() > 0) {
             fab.show();
             fab.setOnClickListener(this::untaggedButtonClicked);
@@ -91,8 +103,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     private void onMapClick(LatLng latLng) {
         if (this.imageGettingTagged == null) return;
-        try {//(ParcelFileDescriptor parcelFileDescriptor  = getApplicationContext().getContentResolver().openFileDescriptor(imageGettingTagged, "rw")){
-            //FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        try {
             ExifInterface exifInterface = new ExifInterface(imageGettingTagged.getPath());
             exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, doubleToDmsString(latLng.latitude));
             exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, doubleToDmsString(latLng.longitude));
@@ -116,15 +127,19 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
             e.printStackTrace();
         }
         imageGettingTagged = null;
+        if(ImageStore.getInstance().getNonTaggedImages().size() == 0) {
+            FloatingActionButton fab = findViewById(R.id.fab);
+            fab.hide();
+        }
     }
 
     String doubleToDmsString(double coord) {
-        coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
-        String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
-        coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
-        sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
-        coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
-        sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
+        coord = coord > 0 ? coord : -coord;
+        String sOut = Integer.toString((int) coord) + "/1,";
+        coord = (coord % 1) * 60;
+        sOut = sOut + Integer.toString((int) coord) + "/1,";
+        coord = (coord % 1) * 60000;
+        sOut = sOut + Integer.toString((int) coord) + "/1000";
         return sOut;
     }
 
@@ -148,6 +163,6 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     public void onFragmentInteraction(Uri uri, DialogFragment fragment) {
         this.imageGettingTagged = uri;
         fragment.dismiss();
-        Snackbar.make(findViewById(R.id.drawer_layout), "Press anywhere to place the image", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.drawer_layout), R.string.snackbar_place, Snackbar.LENGTH_LONG).show();
     }
 }

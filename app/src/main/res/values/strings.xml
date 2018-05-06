@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">GeotagMap</string>
-    <string name="title_activity_main_map">Geotagged Images</string>
+    <string name="title_activity_main_map">Geotagged Billeder</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="precision_option">Præcision af location</string>
+    <string name="precision_desc">Vælg hvor mange decimaler der skal bruges når billeder grupperes (Kræver genstart)</string>
+    <string name="untagged_option">Skjul billeder uden tag</string>
+    <string name="untagged_desc">Skjuller billeder som ikke har et GPS koordinat gemt</string>
+    <string name="snackbar_place">Tryk på kortet for at placere billede</string>
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GeotagMap</string>
+    <string name="title_activity_main_map">Geotagged Images</string>
+    <string name="precision_option">Location precision</string>
+    <string name="precision_desc">Choose how many decimals to use when grouping markers on map (Requires restart)</string>
+    <string name="untagged_option">Hide images without geotag</string>
+    <string name="untagged_desc">Hides the button to show images without associated geo-location tags</string>
+    <string name="snackbar_place">Press anywhere to place the image</string>
+</resources>
