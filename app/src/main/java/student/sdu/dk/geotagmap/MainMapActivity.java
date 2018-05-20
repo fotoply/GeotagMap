@@ -87,6 +87,10 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         mMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
+    public void refreshFAB() {
+        setFABStatus();
+    }
+
     private void setFABStatus() {
         FloatingActionButton fab = findViewById(R.id.fab);
         if(preferences.getBoolean("hideUntaggedImages", false)) {

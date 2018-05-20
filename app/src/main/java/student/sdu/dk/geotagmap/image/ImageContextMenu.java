@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.io.IOException;
 
+import student.sdu.dk.geotagmap.MainMapActivity;
 import student.sdu.dk.geotagmap.R;
 
 /**
@@ -71,11 +72,10 @@ public class ImageContextMenu extends DialogFragment {
             exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, null);
             exif.saveAttributes();
             ImageStore.getInstance().getNonTaggedImages().add(imagePath);
-            //TODO make list with nonTagged Images reappear
-            ImageStore.getInstance().removeTaggedImage(imagePath, marker);
-            for (Fragment fragement: this.getFragmentManager().getFragments()) {
 
-            }
+            ((MainMapActivity)getActivity()).refreshFAB();
+            //TODO find a way to call "refreshFAB" without having to cast the Activity
+            ImageStore.getInstance().removeTaggedImage(imagePath, marker);
             this.getFragmentManager().getFragments().forEach((f)->
                     this.getFragmentManager().beginTransaction().remove(f).commit());
         } catch (IOException e) {
