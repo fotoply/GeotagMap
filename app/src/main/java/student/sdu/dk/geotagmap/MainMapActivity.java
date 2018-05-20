@@ -155,6 +155,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
             return false;
         }
         ImageViewerFragment imageViewerFragment = ImageViewerFragment.newInstance(marker.getPosition());
+        imageViewerFragment.setMarker(marker);
         imageViewerFragment.show(getFragmentManager(), "imageDialog");
         return false;
     }

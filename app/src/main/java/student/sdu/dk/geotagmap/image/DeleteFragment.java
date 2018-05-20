@@ -1,24 +1,17 @@
 package student.sdu.dk.geotagmap.image;
 
 import android.app.DialogFragment;
-import android.media.Image;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+
+import com.google.android.gms.maps.model.Marker;
+
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;import android.annotation.SuppressLint;
-import android.location.Location;
-import android.media.ExifInterface;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.io.File;
 
 import student.sdu.dk.geotagmap.R;
 
@@ -31,9 +24,8 @@ public class DeleteFragment extends DialogFragment {
     public DeleteFragment() {
         // Required empty public constructor
     }
-
+    private Marker marker;
     private Button deleteButton;
-    private Button declineButton;
     private Uri image;
 
     public static DeleteFragment newInstance(Uri image) {
@@ -60,11 +52,15 @@ public class DeleteFragment extends DialogFragment {
         return view;
     }
 
-    public void deleteButtonAction(View v) {
-        MarkGeoTagImage(image.toString());
+    public void setMarker(Marker marker) {
+        this.marker = marker;
     }
 
-    public void MarkGeoTagImage(String imagePath)
+    public void deleteButtonAction(View v) {
+        imageRemoveGeoTag(image.toString());
+    }
+
+    public void imageRemoveGeoTag(String imagePath)
     {
         try {
             ExifInterface exif = new ExifInterface(imagePath);
@@ -73,6 +69,10 @@ public class DeleteFragment extends DialogFragment {
             exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, null);
             exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, null);
             exif.saveAttributes();
+            ImageStore.getInstance().getNonTaggedImages().add(imagePath);
+            //TODO make list with nonTagged Images reappear
+            ImageStore.getInstance().removeTaggedImage(imagePath, marker);
+            this.getFragmentManager().beginTransaction().remove(this).commit();
         } catch (IOException e) {
             e.printStackTrace();
         }

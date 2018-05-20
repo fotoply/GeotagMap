@@ -3,6 +3,7 @@ package student.sdu.dk.geotagmap.image;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class ImageStore {
     private static final ImageStore ourInstance = new ImageStore();
     private UpdatableMap updateMap;
 
+
+    private LatLng test = null;
     public static ImageStore getInstance() {
         return ourInstance;
     }
@@ -38,6 +41,20 @@ public class ImageStore {
         return imageMap.getOrDefault(position, new ArrayList<>());
     }
 
+    public void removeTaggedImage(String image, Marker marker) {
+        List<String> a =  imageMap.get(marker.getPosition());
+        try {
+            a.remove(image);
+            if(imageMap.get(marker.getPosition()).isEmpty()) {
+                imageMap.remove(marker.getPosition());
+                marker.remove();
+            }
+        } catch (NullPointerException e) {
+            Log.i("RemoveImage", "Position does not exist");
+        }
+    }
+
+
     public Set<LatLng> getPositions() {
         return imageMap.keySet();
     }
@@ -53,6 +70,7 @@ public class ImageStore {
     private void addMarker(LatLng position) {
         if (updateMap != null) {
             updateMap.addMarker(new MarkerOptions().position(position));
+            test = position;
             Log.i("Marker", "New marker added");
         }
     }
