@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
@@ -27,6 +27,7 @@ import student.sdu.dk.geotagmap.R;
 public class ImageViewerFragment extends DialogFragment {
 
     private int currentImage = 0;
+    private Marker marker;
 
     public ImageViewerFragment() {
         // Required empty public constructor
@@ -91,7 +92,10 @@ public class ImageViewerFragment extends DialogFragment {
 
             @Override
             public void onLongPress(MotionEvent e) {
-
+                Uri  a = Uri.parse(others.get(currentImage));
+                ImageContextMenu imageContextMenu = ImageContextMenu.newInstance(a);
+                imageContextMenu.setMarker(marker);
+                imageContextMenu.show(getFragmentManager(), "imageDialog");
             }
 
             @Override
@@ -102,6 +106,10 @@ public class ImageViewerFragment extends DialogFragment {
         imageView.setOnTouchListener((touchedView, touch) -> gestureDetector.onTouchEvent(touch));
         //GlideApp.with(view.getContext()).load(pathName).into();
         return view;
+    }
+
+    public void setMarker(Marker marker) {
+        this.marker = marker;
     }
 
 }
