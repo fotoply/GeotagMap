@@ -1,7 +1,6 @@
 package student.sdu.dk.geotagmap.image;
 
 
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -96,9 +93,9 @@ public class ImageViewerFragment extends DialogFragment {
             @Override
             public void onLongPress(MotionEvent e) {
                 Uri  a = Uri.parse(others.get(currentImage));
-                DeleteFragment d = DeleteFragment.newInstance(a);
-                d.setMarker(marker);
-                d.show(getFragmentManager(), "imageDialog");
+                ImageContextMenu imageContextMenu = ImageContextMenu.newInstance(a);
+                imageContextMenu.setMarker(marker);
+                imageContextMenu.show(getFragmentManager(), "imageDialog");
             }
 
             @Override

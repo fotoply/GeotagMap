@@ -1,6 +1,7 @@
 package student.sdu.dk.geotagmap.image;
 
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,17 +20,17 @@ import student.sdu.dk.geotagmap.R;
  * Created by Joachim on 22-04-2018.
  */
 
-public class DeleteFragment extends DialogFragment {
+public class ImageContextMenu extends DialogFragment {
 
-    public DeleteFragment() {
+    public ImageContextMenu() {
         // Required empty public constructor
     }
     private Marker marker;
     private Button deleteButton;
     private Uri image;
 
-    public static DeleteFragment newInstance(Uri image) {
-        DeleteFragment f = new DeleteFragment();
+    public static ImageContextMenu newInstance(Uri image) {
+        ImageContextMenu f = new ImageContextMenu();
         Bundle args = new Bundle();
         args.putString("imageString", image.toString());
         f.setArguments(args);
@@ -43,7 +44,7 @@ public class DeleteFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog, container, false);
+        View view = inflater.inflate(R.layout.image_context_menu, container, false);
         image = Uri.parse(getArguments().getString("imageString", null));
         deleteButton = view.findViewById(R.id.delButton);
         deleteButton.setOnClickListener(v -> {
@@ -72,7 +73,11 @@ public class DeleteFragment extends DialogFragment {
             ImageStore.getInstance().getNonTaggedImages().add(imagePath);
             //TODO make list with nonTagged Images reappear
             ImageStore.getInstance().removeTaggedImage(imagePath, marker);
-            this.getFragmentManager().beginTransaction().remove(this).commit();
+            for (Fragment fragement: this.getFragmentManager().getFragments()) {
+
+            }
+            this.getFragmentManager().getFragments().forEach((f)->
+                    this.getFragmentManager().beginTransaction().remove(f).commit());
         } catch (IOException e) {
             e.printStackTrace();
         }
