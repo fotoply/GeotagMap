@@ -64,23 +64,7 @@ public class ImageContextMenu extends DialogFragment {
 
     public void imageRemoveGeoTag(String imagePath)
     {
-        try {
-            ExifInterface exif = new ExifInterface(imagePath);
-            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, null);
-            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, null);
-            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, null);
-            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, null);
-            exif.saveAttributes();
-            ImageStore.getInstance().getNonTaggedImages().add(imagePath);
-
-            ((MainMapActivity)getActivity()).refreshFAB();
-            //TODO find a way to call "refreshFAB" without having to cast the Activity
-            ImageStore.getInstance().removeTaggedImage(imagePath, marker);
-            this.getFragmentManager().getFragments().forEach((f)->
-                    this.getFragmentManager().beginTransaction().remove(f).commit());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ImageStore.getInstance().imageRemoveGeoTag(imagePath, marker, (MainMapActivity)getActivity(), this.getFragmentManager());
     }
 
 }
